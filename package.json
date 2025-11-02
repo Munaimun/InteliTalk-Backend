@@ -5,9 +5,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node ./server.js",
+    "start": "node ./server.js & npm run worker",
     "dev": "nodemon ./server.js",
+    "pm2": "pm2 start server.js -i max",
     "dev:worker": "node --watch worker.js",
+    "worker": "node worker.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -36,6 +38,7 @@
     "nodemailer": "^7.0.10",
     "openai": "^6.7.0",
     "pdf-parse": "^1.1.1",
+    "pm2": "^6.0.13",
     "validator": "^13.15.15"
   },
   "devDependencies": {
