@@ -19,8 +19,8 @@ RUN npm run build || echo "No build script found"
 # ----------- Stage 2: Runner -----------
 FROM node:alpine-lts AS runner
 
-# Create a non-root user and group
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# Create a non-root user within Choreo-compliant UID range (10000–20000)
+RUN addgroup -g 10001 appgroup && adduser -u 10001 -G appgroup -S appuser
 
 WORKDIR /app
 
@@ -38,8 +38,8 @@ ENV PORT=5001
 # Expose the port (Choreo detects this)
 EXPOSE 5001
 
-# Switch to non-root user (solves CKV_DOCKER_3)
-USER appuser
+# Switch to secure, non-root user
+USER 10001
 
 # Start the application
 CMD ["npm", "start"]
