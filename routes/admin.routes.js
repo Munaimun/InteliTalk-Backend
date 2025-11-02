@@ -20,7 +20,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/admin:
+ * /admin:
  *   get:
  *     summary: Access admin dashboard
  *     description: Retrieve admin dashboard with system overview and management options
@@ -44,7 +44,7 @@ const router = express.Router();
  *       403:
  *         description: Access forbidden - admin role required
  */
-router.get("/admin", auth, isAdmin, (req, res) => {
+router.get("/", auth, isAdmin, (req, res) => {
   return res.status(200).json({
     success: true,
     message: "Welcome to Admin Dashboard",
@@ -53,7 +53,7 @@ router.get("/admin", auth, isAdmin, (req, res) => {
 
 /**
  * @swagger
- * /api/v1/signup:
+ * /admin/signup:
  *   post:
  *     summary: Register new student
  *     description: Create a new student account (Admin only operation)
@@ -97,7 +97,7 @@ router.post("/signup", auth, isAdmin, signup);
 
 /**
  * @swagger
- * /api/v1/user:
+ * /admin/user:
  *   get:
  *     summary: Get all users
  *     description: Retrieve list of all registered users (Admin only)
@@ -127,7 +127,7 @@ router.get("/user", auth, isAdmin, getUsers);
 
 /**
  * @swagger
- * /api/v1/user/{id}:
+ * /admin/user/{id}:
  *   get:
  *     summary: Get user by ID
  *     description: Retrieve detailed information of a specific user (Admin only)
@@ -155,7 +155,7 @@ router.get("/user/:id", auth, isAdmin, getUser);
 
 /**
  * @swagger
- * /api/v1/user/{id}:
+ * /admin/user/{id}:
  *   put:
  *     summary: Update user information
  *     description: Modify user details and settings (Admin only)
@@ -198,7 +198,7 @@ router.put("/user/:id", auth, isAdmin, updateUser);
 
 /**
  * @swagger
- * /api/v1/user/{id}:
+ * /admin/user/{id}:
  *   delete:
  *     summary: Delete user account
  *     description: Permanently remove a user from the system (Admin only)
@@ -226,7 +226,7 @@ router.delete("/user/:id", auth, isAdmin, deleteUser);
 
 /**
  * @swagger
- * /api/v1/public/upload/pdf:
+ * /admin/public/upload/pdf:
  *   post:
  *     summary: Upload PDF to public storage
  *     description: Upload PDF documents to public accessible storage (Admin only)
@@ -263,7 +263,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/private/upload/pdf:
+ * /admin/private/upload/pdf:
  *   post:
  *     summary: Upload PDF to private storage
  *     description: Upload PDF documents to private secure storage (Admin only)

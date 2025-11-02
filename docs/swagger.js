@@ -4,9 +4,9 @@ const options = {
   definition: {
     openapi: "3.0.3",
     info: {
-      title: "University API",
+      title: "Intelitalk ChatBot API",
       version: "1.0.0",
-      description: "REST API documentation for the University System",
+      description: "REST API documentation for the Intelitalk ChatBot System",
     },
     servers: [
       {

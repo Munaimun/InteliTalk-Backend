@@ -4,7 +4,9 @@ import dotenv from "dotenv";
 import express from "express";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
 import { mongoConnect } from "./config/db.js";
+import swaggerSpec from "./docs/swagger.js";
 import {
   errorhandler,
   globalErrorHandler,
@@ -13,15 +15,12 @@ import adminRouter from "./routes/admin.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import guestRouter from "./routes/guest.routes.js";
 import studentRouter from "./routes/student.routes.js";
-import swaggerUi from "swagger-ui-express";
-import swaggerSpec from "./docs/swagger.js";
 dotenv.config();
 // import job from './cron.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
-
-
+const BASE_URL = "/api/v1";
 
 // job.start();
 // middleware
@@ -35,9 +34,10 @@ const limiter = rateLimit({
     xForwardedForHeader: false,
   },
 });
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(helmet());
-app.use("/api/v1/login", limiter);
+app.use(`${BASE_URL}/login`, limiter);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
@@ -47,11 +47,12 @@ app.use(
   })
 );
 app.use(cookieParser());
-//  route mount
-app.use("/api/v1", authRouter);
-app.use("/api/v1/admin", adminRouter);
-app.use("/api/v1/student", studentRouter);
-app.use("/api/v1/guest", guestRouter);
+
+// Route mount with base URL
+app.use(BASE_URL, authRouter);
+app.use(`${BASE_URL}/admin`, adminRouter);
+app.use(`${BASE_URL}/student`, studentRouter);
+app.use(`${BASE_URL}/guest`, guestRouter);
 
 // Handle undefined routes
 app.use("/api", (req, res, next) => {
@@ -69,6 +70,7 @@ async function startServer() {
   await mongoConnect();
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
   });
 }
 
