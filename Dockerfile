@@ -12,9 +12,6 @@ RUN npm install --force
 # Copy the rest of your app source
 COPY . .
 
-# Run build (if applicable)
-# For plain Express APIs, you can skip this
-RUN npm run build || echo "No build script found"
 
 # ----------- Stage 2: Runner -----------
 FROM node:22-alpine AS runner
@@ -27,7 +24,7 @@ WORKDIR /app
 # Copy only necessary files
 COPY --from=builder /build/package*.json ./
 COPY --from=builder /build/node_modules ./node_modules
-COPY --from=builder /build/dist ./dist  
+
 COPY --from=builder /build/.env* ./ 
 COPY --from=builder /build/*.js ./       
 
