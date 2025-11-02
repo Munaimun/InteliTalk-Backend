@@ -1,5 +1,5 @@
 # ----------- Stage 1: Builder -----------
-FROM node:alpine-lts AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /build
 
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build || echo "No build script found"
 
 # ----------- Stage 2: Runner -----------
-FROM node:alpine-lts AS runner
+FROM node:22-alpine AS runner
 
 # Create a non-root user within Choreo-compliant UID range (10000–20000)
 RUN addgroup -g 10001 appgroup && adduser -u 10001 -G appgroup -S appuser
