@@ -4,19 +4,25 @@ import dotenv from "dotenv";
 import express from "express";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { mongoConnect } from "./config/db.js";
 import {
   errorhandler,
   globalErrorHandler,
 } from "./middlewares/errorHandler.js";
-import router from "./routes/route.js";
+import adminRouter from "./routes/admin.routes.js";
+import authRouter from "./routes/auth.routes.js";
+import guestRouter from "./routes/guest.routes.js";
+import studentRouter from "./routes/student.routes.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./docs/swagger.js";
 dotenv.config();
 // import job from './cron.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+
+
 // job.start();
 // middleware
 const limiter = rateLimit({
@@ -29,6 +35,7 @@ const limiter = rateLimit({
     xForwardedForHeader: false,
   },
 });
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(helmet());
 app.use("/api/v1/login", limiter);
 app.use(express.urlencoded({ extended: true }));
@@ -41,25 +48,10 @@ app.use(
 );
 app.use(cookieParser());
 //  route mount
-app.use("/api/v1", router);
-
-// const __dirname = path.join(path.resolve(), "..");
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const rootDir = path.join(__dirname, "..");
-if (process.env.NODE_ENV === "production") {
-  // set static folder
-  app.use(express.static(path.join(rootDir, "client", "dist")));
-
-  app.get(/^(?!\/api).*/, (req, res) => {
-    res.sendFile(path.resolve(rootDir, "client", "dist", "index.html"));
-  });
-} else {
-  app.get("/", (req, res) => {
-    res.send("Api is running");
-  });
-}
+app.use("/api/v1", authRouter);
+app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/student", studentRouter);
+app.use("/api/v1/guest", guestRouter);
 
 // Handle undefined routes
 app.use("/api", (req, res, next) => {

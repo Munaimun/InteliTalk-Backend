@@ -1,21 +1,21 @@
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 import validator from "validator";
 import { userModel } from "../models/user.model.js";
-import dotenv from "dotenv";
-import { chatModel } from "../models/chat.model.js";
+
 import { asyncHandler } from "../middlewares/asyncHandler.js";
 import {
-  ValidationError,
-  AuthenticationError,
-  NotFoundError,
-  ConflictError,
   AppError,
+  AuthenticationError,
+  ConflictError,
+  NotFoundError,
+  ValidationError,
 } from "../middlewares/customErrors.js";
 dotenv.config();
 
 export let tempPass;
-export const signup = asyncHandler(async (req, res, next) => {
+export const signup = asyncHandler(async (req, res) => {
   // getting student info
   let { name, email, studentId, dept, password, confirmPassword, role } =
     req.body;
@@ -92,7 +92,7 @@ export const signup = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const login = asyncHandler(async (req, res, next) => {
+export const login = asyncHandler(async (req, res) => {
   // getting info from request body
   const { email, password } = req.body;
 
@@ -149,7 +149,7 @@ export const login = asyncHandler(async (req, res, next) => {
 });
 
 // logout user
-export const logout = asyncHandler(async (req, res, next) => {
+export const logout = asyncHandler(async (req, res) => {
   res.cookie("token", "", {
     httpOnly: true,
     expires: new Date(0),
@@ -161,23 +161,8 @@ export const logout = asyncHandler(async (req, res, next) => {
   });
 });
 
-//  get all users
-export const getUsers = asyncHandler(async (req, res, next) => {
-  const users = await userModel.find({});
-
-  if (!users || users.length === 0) {
-    throw new NotFoundError("No users found");
-  }
-
-  res.status(200).json({
-    success: true,
-    message: "Users fetched successfully",
-    user: users,
-  });
-});
-
 //  get user by id
-export const getUser = asyncHandler(async (req, res, next) => {
+export const getUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const user = await userModel.findOne({ _id: id });
 
@@ -201,7 +186,7 @@ export const getUser = asyncHandler(async (req, res, next) => {
 });
 
 // Update User
-export const updateUser = asyncHandler(async (req, res, next) => {
+export const updateUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { name, email, studentId, dept, role } = req.body;
 
@@ -253,43 +238,10 @@ export const updateUser = asyncHandler(async (req, res, next) => {
     message: "User information updated successfully",
     user,
   });
-});
+})
 
-// Delete User
-export const deleteUser = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-
-  // delete user
-  const user = await userModel.findByIdAndDelete({ _id: id });
-
-  if (!user) {
-    throw new NotFoundError("No user exists with this information");
-  }
-
-  res.status(200).json({
-    success: true,
-    message: "User deleted successfully",
-  });
-});
-
-// get chats
-export const getChat = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-
-  const chats = await chatModel.find({ author: id }).populate("author", "_id");
-
-  if (!chats || chats.length === 0) {
-    throw new NotFoundError("No chats found for this user");
-  }
-
-  res.status(200).json({
-    success: true,
-    message: "Chats found",
-    chats,
-  });
-});
-
-export const changePassword = asyncHandler(async (req, res, next) => {
+// change password
+export const changePassword = asyncHandler(async (req, res) => {
   const { password, newPassword } = req.body;
 
   if (!password || !newPassword) {
