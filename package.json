@@ -5,7 +5,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node ./server.js & npm run worker",
+    "start": "npm run pm2 & npm run worker",
     "dev": "nodemon ./server.js",
     "pm2": "pm2 start server.js -i max",
     "dev:worker": "node --watch worker.js",
