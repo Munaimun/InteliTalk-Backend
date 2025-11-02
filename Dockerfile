@@ -24,13 +24,8 @@ WORKDIR /app
 # Copy only necessary files
 COPY --from=builder /build/package*.json ./
 COPY --from=builder /build/node_modules ./node_modules
-
-COPY --from=builder /build/.env* ./ 
 COPY --from=builder /build/*.js ./       
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV PORT=5001
 
 # Expose the port (Choreo detects this)
 EXPOSE 5001
