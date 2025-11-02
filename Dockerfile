@@ -7,11 +7,13 @@ WORKDIR /build
 COPY package*.json ./
 
 # Install all deps (including dev) for build step
-RUN npm install --force
+RUN npm install --force && \
+    npm cache clean --force
 
 # Copy the rest of your app source
 COPY . .
 
+RUN rm -rf .git .gitignore README.md *.md tests/ .env.example
 
 # ----------- Stage 2: Runner -----------
 FROM node:22-alpine AS runner
@@ -24,7 +26,11 @@ WORKDIR /app
 # Copy only necessary files
 COPY --from=builder /build/package*.json ./
 COPY --from=builder /build/node_modules ./node_modules
-COPY --from=builder /build/*.js ./       
+COPY --from=builder /build/config ./config
+COPY --from=builder /build/routes ./routes
+COPY --from=builder /build/middlewares ./middlewares
+COPY --from=builder /build/docs ./docs
+COPY --from=builder /build/*.js ./
 
 
 # Expose the port (Choreo detects this)
