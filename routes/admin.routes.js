@@ -1,7 +1,11 @@
 import dotenv from "dotenv";
 import { Router } from "express";
 import { deleteUser, getUsers } from "../controllers/adminController.js";
-import { getUser, signup, updateUser } from "../controllers/authController.js";
+import {
+  getUserById,
+  signup,
+  updateUser,
+} from "../controllers/authController.js";
 import {
   privateUploadController,
   publicUploadController,
@@ -16,6 +20,16 @@ const router = Router();
  * tags:
  *   name: Admin
  *   description: Administrative operations for user and system management
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *     cookieAuth:
+ *       type: apiKey
+ *       in: cookie
+ *       name: token
  */
 
 /**
@@ -55,8 +69,8 @@ router.get("/", auth, isAdmin, (req, res) => {
  * @swagger
  * /admin/signup:
  *   post:
- *     summary: Register new student
- *     description: Create a new student account (Admin only operation)
+ *     summary: Register new student and teacher
+ *     description: Create a new student or teacher account (Admin only operation)
  *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
@@ -151,7 +165,7 @@ router.get("/user", auth, isAdmin, getUsers);
  *       404:
  *         description: User not found
  */
-router.get("/user/:id", auth, isAdmin, getUser);
+router.get("/user/:id", auth, isAdmin, getUserById);
 
 /**
  * @swagger

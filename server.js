@@ -12,6 +12,7 @@ import {
   globalErrorHandler,
 } from "./middlewares/errorHandler.js";
 import adminRouter from "./routes/admin.routes.js";
+import teacherRouter from "./routes/teacher.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import guestRouter from "./routes/guest.routes.js";
 import studentRouter from "./routes/student.routes.js";
@@ -52,6 +53,7 @@ app.use(cookieParser());
 // Route mount with base URL
 app.use(BASE_URL, authRouter);
 app.use(`${BASE_URL}/admin`, adminRouter);
+app.use(`${BASE_URL}/teacher`, teacherRouter);
 app.use(`${BASE_URL}/student`, studentRouter);
 app.use(`${BASE_URL}/guest`, guestRouter);
 

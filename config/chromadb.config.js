@@ -1,4 +1,5 @@
-import 'dotenv/config';
+import dotenv from "dotenv";
+dotenv.config();
 const database = process.env.CHROMA_DATABASE;
 const tenant = process.env.CHROMA_TENANT;
 

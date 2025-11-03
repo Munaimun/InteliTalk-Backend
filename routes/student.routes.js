@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import { Router } from "express";
+import { getUserById, updateUser } from "../controllers/authController.js";
 import { getChat, student } from "../controllers/studentController.js";
 import { auth, isStudent } from "../middlewares/auth.js";
-import { getUser, updateUser } from "../controllers/authController.js";
 dotenv.config();
 
 const router = Router();
@@ -107,7 +107,7 @@ router.get("/message/:id", auth, isStudent, getChat);
  *       404:
  *         description: User not found
  */
-router.get("/:id", auth,isStudent, getUser);
+router.get("/:id", auth, isStudent, getUserById);
 
 /**
  * @swagger

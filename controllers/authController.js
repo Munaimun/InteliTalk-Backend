@@ -162,7 +162,7 @@ export const logout = asyncHandler(async (req, res) => {
 });
 
 //  get user by id
-export const getUser = asyncHandler(async (req, res) => {
+export const getUserById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const user = await userModel.findOne({ _id: id });
 
@@ -213,14 +213,15 @@ export const updateUser = asyncHandler(async (req, res) => {
 
   // define user variable
   let user;
-  if (role === "Admin") {
+  if (role === "Admin" || role === "Teacher") {
     // updating admin information
     user = await userModel.findOneAndUpdate(
       { _id: id },
       { name: name, email: email, dept: dept },
       { new: true }
     );
-  } else {
+  }
+   else {
     // updating student information
     user = await userModel.findOneAndUpdate(
       { _id: id },

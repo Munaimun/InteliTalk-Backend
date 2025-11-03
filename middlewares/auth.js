@@ -28,6 +28,13 @@ export const isAdmin = (req, res, next) => {
   next();
 };
 
+export const isTeacher = (req, res, next) => {
+  if (req.user.role !== "Teacher") {
+    throw new AuthorizationError("Teacher access required");
+  }
+  next();
+};
+
 export const isStudent = (req, res, next) => {
   if (req.user.role !== "Student") {
     throw new AuthorizationError("Student access required");
