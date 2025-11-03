@@ -1,43 +1,16 @@
-# ----------- Stage 1: Builder -----------
-FROM node:22-alpine AS builder
+FROM node:22.21.1-alpine3.21
 
-WORKDIR /build
+WORKDIR /usr/src/app
 
-# Copy dependency files first for better caching
 COPY package*.json ./
 
-# Install all deps (including dev) for build step
-RUN npm install --force && \
-    npm cache clean --force
+RUN npm install --force
 
-# Copy the rest of your app source
 COPY . .
 
-RUN rm -rf .git .gitignore README.md *.md tests/ .env.example
+ENV NODE_ENV=production
+ENV PORT=5001
 
-# ----------- Stage 2: Runner -----------
-FROM node:22-alpine AS runner
-
-# Create a non-root user within Choreo-compliant UID range (10000–20000)
-RUN addgroup -g 10001 appgroup && adduser -u 10001 -G appgroup -S appuser
-
-WORKDIR /app
-
-# Copy only necessary files
-COPY --from=builder /build/package*.json ./
-COPY --from=builder /build/node_modules ./node_modules
-COPY --from=builder /build/config ./config
-COPY --from=builder /build/routes ./routes
-COPY --from=builder /build/middlewares ./middlewares
-COPY --from=builder /build/docs ./docs
-COPY --from=builder /build/*.js ./
-
-
-# Expose the port (Choreo detects this)
 EXPOSE 5001
 
-# Switch to secure, non-root user
-USER 10001
-
-# Start the application
 CMD ["npm", "start"]

@@ -1,5 +1,7 @@
+import dotenv from "dotenv";
 import { Redis } from "ioredis";
-import "dotenv/config";
+
+dotenv.config();
 
 // Singleton instance - cached by Node.js module system
 let client = null;
@@ -14,16 +16,16 @@ const createRedisClient = () => {
     enableReadyCheck: false,
   });
 
-  client.on('error', (err) => console.error('Redis error:', err));
-  client.on('connect', () => console.log('Connected to Upstash Redis'));
+  client.on("error", (err) => console.error("Redis error:", err));
+  client.on("connect", () => console.log("Connected to Upstash Redis"));
 
   // Test connection
   (async () => {
     try {
-      await client.set('test', 'connection');
-      console.log('✓ Redis connection verified');
+      await client.set("test", "connection");
+      console.log("✓ Redis connection verified");
     } catch (error) {
-      console.error('✗ Redis connection failed:', error);
+      console.error("✗ Redis connection failed:", error);
     }
   })();
 

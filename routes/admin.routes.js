@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import express from "express";
+import { Router } from "express";
 import { deleteUser, getUsers } from "../controllers/adminController.js";
 import { getUser, signup, updateUser } from "../controllers/authController.js";
 import {
@@ -9,7 +9,7 @@ import {
 } from "../controllers/uploadController.js";
 import { auth, isAdmin } from "../middlewares/auth.js";
 dotenv.config();
-const router = express.Router();
+const router = Router();
 
 /**
  * @swagger

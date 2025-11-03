@@ -1,10 +1,8 @@
 node_modules
-dist
-.env
-.DS_Store
 npm-debug.log
-.vscode
-.idea
-coverage
-logs
+Dockerfile
+.dockerignore
+.git
+.gitignore
+*.env
 *.log

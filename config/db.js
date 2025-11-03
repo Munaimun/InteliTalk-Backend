@@ -1,5 +1,7 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
+
+dotenv.config();
 
 // Environment variable validation
 const MONGO_URL = process.env.MONGODB_URL;
@@ -142,5 +144,3 @@ export async function mongoDisConnect() {
     throw error;
   }
 }
-
-
