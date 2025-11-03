@@ -15,6 +15,7 @@ import adminRouter from "./routes/admin.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import guestRouter from "./routes/guest.routes.js";
 import studentRouter from "./routes/student.routes.js";
+import "./task.js";
 
 dotenv.config();
 
@@ -54,6 +55,10 @@ app.use(`${BASE_URL}/admin`, adminRouter);
 app.use(`${BASE_URL}/student`, studentRouter);
 app.use(`${BASE_URL}/guest`, guestRouter);
 
+app.get("/", (req, res) => {
+  res.send("Welcome to InteliTalk API Server");
+});
+
 // Handle undefined routes
 app.use("/api", (req, res, next) => {
   // Check if response hasn't been sent (route not found)
@@ -70,9 +75,7 @@ async function startServer() {
   try {
     await mongoConnect();
     app.listen(PORT, () => {
-      console.log(
-        `Server is running on http://localhost:${PORT}`
-      );
+      console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
     });
   } catch (error) {
