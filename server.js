@@ -49,6 +49,11 @@ app.use(
   })
 );
 app.use(cookieParser());
+// logger
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 // Route mount with base URL
 app.use(BASE_URL, authRouter);
