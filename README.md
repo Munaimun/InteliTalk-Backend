@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![InteliTalk Banner](https://img.shields.io/badge/InteliTalk-AI%20Chatbot-blue?style=for-the-badge)
+[![InteliTalk Banner](https://img.shields.io/badge/InteliTalk-AI%20Chatbot-blue?style=for-the-badge)](https://iteli-talk-client.vercel.app/)
 
 [![Node.js](https://img.shields.io/badge/Node.js-22.x-green?style=flat-square&logo=node.js)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-5.x-lightgrey?style=flat-square&logo=express)](https://expressjs.com/)
@@ -35,14 +35,16 @@
 
 ## 🎯 Overview
 
-**InteliTalk** is an enterprise-grade AI chatbot backend system that leverages cutting-edge technologies to deliver intelligent, context-aware conversational experiences. The system implements **RAG (Retrieval-Augmented Generation)** using vector databases, supports multiple user roles, and processes PDF documents for enhanced knowledge retrieval.
+**InteliTalk** is an enterprise-grade AI chatbot backend system that leverages cutting-edge technologies to deliver intelligent, context-aware conversational experiences. The system implements **RAG (Retrieval-Augmented Generation)** using vector databases, supports multiple user roles, and processes PDF documents for enhanced knowledge retrieval with cloud storage integration.
 
 ### **Perfect for showcasing:**
+
 - ✅ Full-stack backend development expertise
 - ✅ AI/ML integration (LangChain, OpenAI, HuggingFace)
-- ✅ Microservices architecture with queue processing
+- ✅ Semi-Monolith architecture with queue processing
 - ✅ Production-ready authentication & authorization
 - ✅ Vector database implementation (ChromaDB)
+- ✅ Cloud storage integration (Cloudinary for PDF management)
 - ✅ RESTful API design with comprehensive documentation
 
 ---
@@ -50,24 +52,30 @@
 ## 🚀 Key Features
 
 ### 1. **Role-Based Access Control (RBAC)**
-- **Three distinct user roles:**
+
+- **Four distinct user roles:**
   - 👨‍💼 **Admin**: Full system control, user management, document uploads
+  - 👨‍🏫 **Teacher**: Manages student accounts and information
   - 👨‍🎓 **Student**: Access to authenticated chat features with enhanced knowledge base
   - 👤 **Guest**: Public access to basic chatbot functionality
 
 ### 2. **AI-Powered Conversational Intelligence**
+
 - **RAG Implementation**: Context-aware responses using vector similarity search
 - **LangChain Integration**: Advanced prompt engineering and chain management
 - **Multiple LLM Support**: OpenAI and Groq API integration
 - **Semantic Search**: HuggingFace Transformers for embeddings (`all-mpnet-base-v2`)
 
 ### 3. **Document Processing Pipeline**
-- **PDF Upload & Processing**: Automatic document ingestion
-- **Background Queue Processing**: BullMQ for asynchronous PDF processing
-- **Text Chunking**: Recursive character splitting (1000 chars, 50 overlap)
-- **Vector Storage**: Separate collections for public (guest) and private (student) data
+
+- **PDF Upload & Processing**: Automatic document ingestion with Cloudinary for efficient storage and management.
+- **Background Queue Processing**: BullMQ for asynchronous PDF processing.
+- **Text Chunking**: Recursive character splitting (1000 chars, 50 overlap).
+- **Vector Storage**: Separate collections for public (guest) and private (student) data.
+- **Cloudinary Integration**: Utilizes Cloudinary for handling PDF uploads and transformations, ensuring scalable and secure storage solutions.
 
 ### 4. **Enterprise-Grade Security**
+
 - JWT-based authentication with HTTP-only cookies
 - Bcrypt password hashing
 - Helmet. js for security headers
@@ -76,6 +84,7 @@
 - Input validation with custom error handling
 
 ### 5. **Production-Ready Infrastructure**
+
 - **Docker Support**: Complete containerization with Alpine Linux
 - **Redis Integration**: Queue management and caching
 - **MongoDB**: User management and chat history
@@ -88,30 +97,30 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     Client Applications                      │
+│                     Client Applications                     │
 └─────────────────────┬───────────────────────────────────────┘
                       │
 ┌─────────────────────▼───────────────────────────────────────┐
-│                   Express.js API Server                      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Auth       │  │    Admin     │  │   Student    │      │
-│  │   Routes     │  │    Routes    │  │   Routes     │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Guest      │  │ Middlewares  │  │  Controllers │      │
-│  │   Routes     │  │  (Auth/RBAC) │  │              │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│                   Express.js API Server                     │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   Auth       │  │    Admin     │  │   Student    │       │
+│  │   Routes     │  │    Routes    │  │   Routes     │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   Guest      │  │ Middlewares  │  │  Controllers │       │
+│  │   Routes     │  │  (Auth/RBAC) │  │              │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
 └─────────────────────┬───────────────────────────────────────┘
                       │
         ┌─────────────┼─────────────┐
         │             │             │
-┌───────▼──────┐ ┌───▼────────┐ ┌─▼──────────────┐
-│   MongoDB    │ │   Redis    │ │  ChromaDB      │
-│              │ │            │ │  (Vector DB)   │
-│ - Users      │ │ - Queues   │ │                │
-│ - Chats      │ │ - Cache    │ │ - guest_coll   │
-│              │ │            │ │ - student_coll │
-└──────────────┘ └────────────┘ └────────────────┘
+┌───────▼──────┐ ┌─────▼──────┐   ┌─▼──────────────┐
+│   MongoDB    │ │   Redis    │   │  ChromaDB      │
+│              │ │            │   │  (Vector DB)   │
+│ - Users      │ │ - Queues   │   │                │
+│ - Chats      │ │ - Cache    │   │ - guest_coll   │
+│              │ │            │   │ - student_coll │
+└──────────────┘ └────────────┘   └────────────────┘
                       │
               ┌───────▼────────┐
               │  BullMQ Worker │
@@ -128,24 +137,30 @@
 ## 🛠 Tech Stack
 
 ### **Backend Framework**
+
 - **Node.js 22.x** - Modern JavaScript runtime
 - **Express.js 5.x** - Fast, minimalist web framework
 
 ### **AI/ML Technologies**
+
 - **LangChain** - Framework for LLM applications
 - **OpenAI API** - GPT models integration
 - **Groq API** - Alternative LLM provider
 - **HuggingFace Transformers** - Open-source embeddings
 
 ### **Databases**
+
 - **MongoDB 8.x** - NoSQL database for user/chat data
 - **ChromaDB** - Cloud vector database for embeddings
 - **Redis (Upstash)** - In-memory data store for queues
+- **Cloudinary** - Cloud storage for PDF documents
 
 ### **Queue & Workers**
+
 - **BullMQ** - Redis-based queue for background jobs
 
 ### **Security & Utilities**
+
 - **JWT** - Stateless authentication
 - **Bcrypt** - Password hashing
 - **Helmet** - Security headers
@@ -153,9 +168,11 @@
 - **Validator** - Input sanitization
 
 ### **Documentation**
+
 - **Swagger/OpenAPI 3.0** - Interactive API documentation
 
 ### **DevOps**
+
 - **Docker** - Containerization
 - **Nodemon** - Development hot-reload
 
@@ -164,43 +181,45 @@
 ## 📸 System Screenshots
 
 ### **API Documentation (Swagger UI)**
+
 ```
-┌─────────────────────────────────────────────────────────┐
-│  Intelitalk ChatBot API - v1.0.0                        │
-├─────────────────────────────────────────────────────────┤
-│  Authentication                                          │
-│    POST   /api/v1/login          User login             │
-│    POST   /api/v1/logout         User logout            │
-│    PATCH  /api/v1/password       Change password        │
-│                                                          │
-│  Admin Operations                                        │
-│    GET    /admin                 Admin dashboard        │
-│    POST   /admin/signup          Create student account │
-│    GET    /admin/user            Get all users          │
-│    DELETE /admin/user/:id        Delete user            │
-│    POST   /admin/upload/public   Upload public PDF      │
-│    POST   /admin/upload/private  Upload private PDF     │
-│                                                          │
-│  Student Features                                        │
-│    GET    /student               Student chat           │
-│    GET    /student/chat          Get chat history       │
-│    GET    /student/profile       Get profile            │
-│    PATCH  /student/profile       Update profile         │
-│                                                          │
-│  Guest Access                                            │
-│    GET    /guest? question=...    Public chatbot         │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│  Intelitalk ChatBot API - v2.0.0                                │
+├─────────────────────────────────────────────────────────────────┤
+│  Authentication                                                 │
+│    POST   /api/v1/login          User login                     │
+│    POST   /api/v1/logout         User logout                    │
+│    PATCH  /api/v1/password       Change password                │
+│                                                                 │
+│  Admin Operations                                               │
+│    GET    /api/v1/admin                 Admin dashboard         │
+│    POST   /api/v1/admin/signup          Create student account  │
+│    GET    /api/v1/admin/user            Get all users           │
+│    DELETE /api/v1/admin/user/:id        Delete user             │
+│    POST   /api/v1/admin/upload/public   Upload public PDF       │
+│    POST   /api/v1/admin/upload/private  Upload private PDF      │
+│                                                                 │
+│  Student Features                                               │
+│    GET    /api/v1/student               Student chat            │
+│    GET    /api/v1/student/chat          Get chat history        │
+│    GET    /api/v1/student/profile       Get profile             │
+│    PATCH  /api/v1/student/profile       Update profile          │
+│                                                                 │
+│  Guest Access                                                   │
+│    GET    /api/v1/guest?question=...    Public chatbot          │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### **RAG Flow Demonstration**
+
 ```
 User Query: "What is machine learning?"
       │
       ▼
-┌──────────────────────────────┐
-│  1. Generate Embeddings      │
+┌───────────────────────────────┐
+│  1. Generate Embeddings       │
 │     (HuggingFace Transformers)│
-└──────────────┬───────────────┘
+└──────────────┬────────────────┘
                ▼
 ┌──────────────────────────────┐
 │  2. Vector Similarity Search │
@@ -225,17 +244,19 @@ User Query: "What is machine learning?"
 ## 🔧 Installation
 
 ### **Prerequisites**
+
 - Node.js 22.x or higher
 - MongoDB instance
 - Redis instance (Upstash recommended)
 - ChromaDB Cloud account
 - OpenAI/Groq API key
+- Cloudinary account for PDF storage
 
 ### **Quick Start**
 
 ```bash
 # 1. Clone the repository
-git clone https://github. com/dev-saiful/InteliTalk-server.git
+git clone https://github.com/dev-saiful/InteliTalk-server.git
 cd InteliTalk-server
 
 # 2. Install dependencies
@@ -245,8 +266,8 @@ npm install --force
 cp exm.env . env
 # Edit .env with your credentials
 
-# 4. Create uploads directory
-mkdir uploads
+# 4. Create temp directory
+mkdir temp
 
 # 5. Start the server (development)
 npm run dev
@@ -266,6 +287,7 @@ docker run -p 5001:5001 --env-file .env intelitalk-server
 ```
 
 ### **Production Start**
+
 ```bash
 # Starts both server and worker
 npm start
@@ -300,6 +322,11 @@ CHROMA_TENANT=your-tenant-id
 # Redis (Queue Management)
 REDIS_URL=redis://your-upstash-redis-url
 
+# Cloudinary Configuration
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+
 # Email Configuration (Optional)
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-app-password
@@ -310,11 +337,13 @@ EMAIL_PASS=your-app-password
 ## 📚 API Documentation
 
 ### **Interactive Documentation**
+
 Access Swagger UI at: `http://localhost:5001/api-docs`
 
 ### **Authentication Endpoints**
 
 #### **Login**
+
 ```http
 POST /api/v1/login
 Content-Type: application/json
@@ -334,6 +363,7 @@ Response: 200 OK
 ```
 
 #### **Logout**
+
 ```http
 GET /api/v1/logout
 Authorization: Bearer {token}
@@ -348,6 +378,7 @@ Response: 200 OK
 ### **Admin Endpoints**
 
 #### **Create Student Account**
+
 ```http
 POST /api/v1/admin/signup
 Authorization: Bearer {admin-token}
@@ -362,6 +393,7 @@ Content-Type: application/json
 ```
 
 #### **Upload PDF (Public/Private)**
+
 ```http
 POST /api/v1/admin/upload/public
 Authorization: Bearer {admin-token}
@@ -381,6 +413,7 @@ Response: 200 OK
 ### **Student Endpoints**
 
 #### **Ask Question (Authenticated)**
+
 ```http
 GET /api/v1/student? question=What is AI?
 Authorization: Bearer {student-token}
@@ -395,6 +428,7 @@ Response: 200 OK
 ```
 
 #### **Get Chat History**
+
 ```http
 GET /api/v1/student/chat
 Authorization: Bearer {student-token}
@@ -409,6 +443,7 @@ Response: 200 OK
 ### **Guest Endpoints**
 
 #### **Public Chat**
+
 ```http
 GET /api/v1/guest?question=Tell me about machine learning
 
@@ -467,35 +502,39 @@ InteliTalk-server/
 
 ## 🔒 Security Features
 
-| Feature | Implementation |
-|---------|----------------|
-| **Authentication** | JWT with HTTP-only cookies |
-| **Password Security** | Bcrypt with salt rounds |
-| **Rate Limiting** | 5 requests/15min on login endpoint |
-| **CORS Protection** | Configured whitelist origins |
-| **Security Headers** | Helmet.js middleware |
-| **Input Validation** | Validator. js & custom checks |
-| **Error Handling** | Custom error classes with safe messages |
-| **RBAC** | Middleware-based role verification |
+| Feature               | Implementation                          |
+| --------------------- | --------------------------------------- |
+| **Authentication**    | JWT with HTTP-only cookies              |
+| **Password Security** | Bcrypt with salt rounds                 |
+| **Rate Limiting**     | 5 requests/15min on login endpoint      |
+| **CORS Protection**   | Configured whitelist origins            |
+| **Security Headers**  | Helmet.js middleware                    |
+| **Input Validation**  | Validator. js & custom checks           |
+| **Error Handling**    | Custom error classes with safe messages |
+| **RBAC**              | Middleware-based role verification      |
 
 ---
 
 ## ⚡ Performance Optimization
 
 ### **Caching Strategy**
+
 - Redis for queue management and future caching layer
 - Vector database for fast similarity search (sub-second retrieval)
 
 ### **Background Processing**
+
 - Asynchronous PDF processing with BullMQ
 - Non-blocking document ingestion pipeline
 
 ### **Database Optimization**
+
 - MongoDB connection pooling
 - Singleton pattern for Redis client
 - Vector indexing in ChromaDB
 
 ### **Scalability**
+
 - Stateless authentication (JWT)
 - Docker containerization for horizontal scaling
 - Queue-based architecture for distributed workers
@@ -505,17 +544,20 @@ InteliTalk-server/
 ## 🎓 Key Technical Highlights for Recruiters
 
 ### **1. Advanced AI Integration**
+
 - Implemented RAG (Retrieval-Augmented Generation) from scratch
 - Integrated multiple LLM providers (OpenAI, Groq)
 - Used HuggingFace Transformers for local embeddings
 - Built custom prompt engineering pipeline
 
-### **2.  Microservices Architecture**
+### **2. Microservices Architecture**
+
 - Separation of concerns (API server + Worker process)
 - Queue-based communication (BullMQ)
 - Event-driven document processing
 
 ### **3. Production-Ready Code**
+
 - Comprehensive error handling
 - Environment-based configuration
 - Security best practices
@@ -523,12 +565,14 @@ InteliTalk-server/
 - Docker deployment ready
 
 ### **4. Database Expertise**
+
 - NoSQL (MongoDB) for structured data
 - Vector database (ChromaDB) for embeddings
 - In-memory store (Redis) for queues
 - Multi-database architecture
 
 ### **5. Modern JavaScript**
+
 - ES6+ modules
 - Async/await patterns
 - Middleware architecture
@@ -538,31 +582,34 @@ InteliTalk-server/
 
 ## 📊 System Capabilities
 
-| Metric | Value |
-|--------|-------|
-| **Concurrent Users** | Scalable with horizontal deployment |
-| **Document Processing** | Asynchronous, non-blocking |
-| **Response Time** | < 2s for RAG queries (avg) |
-| **Vector Search** | Top-K retrieval (K=4) |
-| **Embedding Dimension** | 768 (all-mpnet-base-v2) |
-| **Chunk Size** | 1000 characters |
-| **Supported Formats** | PDF |
-| **API Endpoints** | 15+ RESTful routes |
+| Metric                  | Value                               |
+| ----------------------- | ----------------------------------- |
+| **Concurrent Users**    | Scalable with horizontal deployment |
+| **Document Processing** | Asynchronous, non-blocking          |
+| **Response Time**       | < 2s for RAG queries (avg)          |
+| **Vector Search**       | Top-K retrieval (K=4)               |
+| **Embedding Dimension** | 768 (all-mpnet-base-v2)             |
+| **Chunk Size**          | 1000 characters                     |
+| **Supported Formats**   | PDF                                 |
+| **API Endpoints**       | 15+ RESTful routes                  |
 
 ---
 
 ## 🚦 Getting Started Guide
 
 ### **Step 1: Test Guest Access**
+
 ```bash
 curl "http://localhost:5001/api/v1/guest?question=Hello"
 ```
 
 ### **Step 2: Admin Login**
+
 - Seed admin account in MongoDB
 - Login via `/api/v1/login`
 
 ### **Step 3: Create Student**
+
 ```bash
 curl -X POST http://localhost:5001/api/v1/admin/signup \
   -H "Authorization: Bearer {admin-token}" \
@@ -571,6 +618,7 @@ curl -X POST http://localhost:5001/api/v1/admin/signup \
 ```
 
 ### **Step 4: Upload Knowledge Base**
+
 ```bash
 curl -X POST http://localhost:5001/api/v1/admin/upload/public \
   -H "Authorization: Bearer {admin-token}" \
@@ -578,6 +626,7 @@ curl -X POST http://localhost:5001/api/v1/admin/upload/public \
 ```
 
 ### **Step 5: Test RAG Chat**
+
 ```bash
 curl "http://localhost:5001/api/v1/student? question=Your question" \
   -H "Authorization: Bearer {student-token}"
