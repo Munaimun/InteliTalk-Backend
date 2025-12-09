@@ -17,7 +17,7 @@ dotenv.config();
 export let tempPass;
 export const signup = asyncHandler(async (req, res) => {
   // getting student info
-  let { name, email, studentId, dept, password, confirmPassword, role } =
+  let { name, email, dept, password, confirmPassword, role } =
     req.body;
 
   // check filed is empty or not
@@ -60,7 +60,12 @@ export const signup = asyncHandler(async (req, res) => {
     throw new ConflictError("This email is already registered!");
   }
 
+    // hashing password
+  const hashPass = await bcrypt.hash(password, 10);
+  let user;
+
   if (role === "Student") {
+    const { studentId } = req.body;
     if (validator.isEmpty(studentId)) {
       throw new ValidationError("Student ID is required for students");
     }
@@ -70,13 +75,8 @@ export const signup = asyncHandler(async (req, res) => {
     if (existingId) {
       throw new ConflictError("This student ID is already registered!");
     }
-  }
-
-  // hashing password
-  const hashPass = await bcrypt.hash(password, 10);
-
-  // creating user
-  const user = await userModel.create({
+      // creating user
+  user = await userModel.create({
     name,
     email,
     studentId,
@@ -84,6 +84,30 @@ export const signup = asyncHandler(async (req, res) => {
     password: hashPass,
     role,
   });
+  }
+
+  if (role === "Teacher") {
+    const { teacherId } = req.body;
+    if (validator.isEmpty(teacherId)) {
+      throw new ValidationError("Teacher ID is required for teachers");
+    }
+
+    // checking teacherId already registered or not
+    const existingTeacherId = await userModel.findOne({ teacherId });
+    if (existingTeacherId) {
+      throw new ConflictError("This teacher ID is already registered!");
+    }
+         // creating user
+  user = await userModel.create({
+    name,
+    email,
+    teacherId,
+    dept,
+    password: hashPass,
+    role,
+  });
+  }
+
 
   res.status(201).json({
     success: true,

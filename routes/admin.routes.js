@@ -67,10 +67,10 @@ router.get("/", auth, isAdmin, (req, res) => {
 
 /**
  * @swagger
- * /admin/signup:
+ * /admin/student-signup:
  *   post:
- *     summary: Register new student and teacher
- *     description: Create a new student or teacher account (Admin only operation)
+ *     summary: Register new student
+ *     description: Create a new student account (Admin only operation)
  *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
@@ -85,6 +85,8 @@ router.get("/", auth, isAdmin, (req, res) => {
  *               - email
  *               - password
  *               - confirmPassword
+ *               - studentId
+ *               - dept
  *               - role
  *             properties:
  *               name:
@@ -94,6 +96,10 @@ router.get("/", auth, isAdmin, (req, res) => {
  *               password:
  *                 type: string
  *               confirmPassword:
+ *                 type: string
+ *               studentId:
+ *                 type: string
+ *               dept:
  *                 type: string
  *               role:
  *                 type: string
@@ -107,7 +113,57 @@ router.get("/", auth, isAdmin, (req, res) => {
  *       403:
  *         description: Access forbidden - admin role required
  */
-router.post("/signup", auth, isAdmin, signup);
+router.post("/student-signup", auth, isAdmin, signup);
+
+/**
+ * @swagger
+ * /admin/teacher-signup:
+ *   post:
+ *     summary: Register new  teacher
+ *     description: Create a teacher account (Admin only operation)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *               - confirmPassword
+ *               - teacherId
+ *               - dept
+ *               - role
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               confirmPassword:
+ *                 type: string
+ *               teacherId:
+ *                 type: string
+ *               dept:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Teacher account created successfully
+ *       400:
+ *         description: Invalid input data
+ *       401:
+ *         description: Unauthorized access
+ *       403:
+ *         description: Access forbidden - admin role required
+ */
+router.post("/teacher-signup", auth, isAdmin, signup);
 
 /**
  * @swagger

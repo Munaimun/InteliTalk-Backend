@@ -22,6 +22,16 @@ const userSchema = mongoose.Schema({
             },
         }
     },
+    teacherId:{
+        type:String,
+        trim:true,
+        validate: {
+            validator: function(teacherId) {
+                // Check if teacherId is required based on the role being "Teacher"
+                return !(this.role === "Teacher" && !teacherId);
+            },
+        }
+    },
     password:{
         type:String,
         min:[6,"Minimun 6 character"],
@@ -42,6 +52,7 @@ const userSchema = mongoose.Schema({
 
 userSchema.index({email:1},{unique:true});
 userSchema.index({studentId:1},{sparse:true});
+userSchema.index({teacherId:1},{sparse:true});
 // send mail successfully register
 userSchema.post("save",mailSend);
 

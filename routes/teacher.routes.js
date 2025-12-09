@@ -53,7 +53,7 @@ router.get("/", auth, isTeacher, (req, res) => {
 
 /**
  * @swagger
- * /teacher/signup:
+ * /teacher/student-signup:
  *   post:
  *     summary: Register new student
  *     description: Create a new student account (Teacher only operation)
@@ -71,6 +71,8 @@ router.get("/", auth, isTeacher, (req, res) => {
  *               - email
  *               - password
  *               - confirmPassword
+ *               - studentId
+ *               - dept
  *               - role
  *             properties:
  *               name:
@@ -80,6 +82,10 @@ router.get("/", auth, isTeacher, (req, res) => {
  *               password:
  *                 type: string
  *               confirmPassword:
+ *                 type: string
+ *               studentId:
+ *                 type: string
+ *               dept:
  *                 type: string
  *               role:
  *                 type: string
@@ -93,7 +99,7 @@ router.get("/", auth, isTeacher, (req, res) => {
  *       403:
  *         description: Access forbidden - teacher role required
  */
-router.post("/signup", auth, isTeacher, signup);
+router.post("/student-signup", auth, isTeacher, signup);
 
 /**
  * @swagger
