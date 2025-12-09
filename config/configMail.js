@@ -1,17 +1,18 @@
 import nodemailer from "nodemailer";
 import { tempPass } from "../controllers/authController.js";
+import { userModel } from "../models/user.model.js";
 
 
 export const mailSend = async (doc) => {
   try {
 
     let transporter = nodemailer.createTransport({
-      host: "smtp.sendgrid.net",
+      host: "smtp.ethereal.email",
       port: 587,
       secure: false,
       auth: {
-        user: process.env.SENDGRID_USERNAME,
-        pass: process.env.SENDGRID_PASSWORD,
+        user: process.env.ETHEREAL_USERNAME,
+        pass: process.env.ETHEREAL_PASSWORD,
       },
     });
 
@@ -26,9 +27,18 @@ export const mailSend = async (doc) => {
                 `,
     });
     if (!info) {
-      console.log("Check credientials");
+      throw new Error("Failed to send email");
     }
+    console.log("Message sent: %s", doc.email);
   } catch (error) {
-    console.log(error);
+    console.error(" Email sending error: ", error);
+// Delete the user document if email sending fails
+    try {
+      await userModel.findByIdAndDelete(doc._id);
+      console.log("User document deleted due to email failure: ", doc._id);
+    } catch (deleteError) {
+      console.error("Error deleting user document: ", deleteError);
+    }
+    throw error;
   }
 };
