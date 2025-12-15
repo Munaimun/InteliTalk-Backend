@@ -6,6 +6,7 @@ import {
   getStudentById,
   getStudents,
   updateStudent,
+  getDepartmentStats,
 } from "../controllers/teacherController.js";
 import { auth, isTeacher } from "../middlewares/auth.js";
 dotenv.config();
@@ -229,5 +230,42 @@ router.put("/student/:id", auth, isTeacher, updateStudent);
  *         description: Student not found
  */
 router.delete("/student/:id", auth, isTeacher, deleteStudent);
+
+/**
+ * @swagger
+ * /teacher/department-stats:
+ *   get:
+ *     summary: Get department statistics
+ *     description: Retrieve comprehensive statistics about students in teacher's department
+ *     tags: [Teacher]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved department statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     department:
+ *                       type: string
+ *                     totalStudents:
+ *                       type: number
+ *                     recentStudents:
+ *                       type: array
+ *                     departmentInfo:
+ *                       type: object
+ *       401:
+ *         description: Unauthorized access
+ *       403:
+ *         description: Access forbidden - teacher role required
+ */
+router.get("/department-stats", auth, isTeacher, getDepartmentStats);
 
 export default router;

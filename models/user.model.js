@@ -41,8 +41,13 @@ const userSchema = mongoose.Schema({
     },
     dept:{
         type:String,
-        require:true,
         enum:["CSE","LAW","BANGLA","BBA","NAVAL","CIVIL","MECHANICAL","EEE"],
+        validate: {
+            validator: function(dept) {
+                // dept is not required for Admin role
+                return !(this.role !== "Admin" && !dept);
+            },
+        }
     },
     role:{
         type:String,

@@ -7,6 +7,7 @@ import { asyncHandler } from "../middlewares/asyncHandler.js";
 import {
   ServiceUnavailableError,
   ValidationError,
+  NotFoundError,
 } from "../middlewares/customErrors.js";
 import { chatModel } from "../models/chat.model.js";
 

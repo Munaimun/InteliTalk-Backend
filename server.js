@@ -26,20 +26,24 @@ const app = express();
 const BASE_URL = "/api/v1";
 
 // middleware
-const limiter = rateLimit({
+const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 5,
+  limit: 10, // 10 attempts per IP
   legacyHeaders: false,
-  standardHeaders: true,
-  message: "Too many request,Please try agin 15 minutes later",
-  validate: {
-    xForwardedForHeader: false,
+  standardHeaders: "draft-7",
+  skipSuccessfulRequests: true, // Only count failed login attempts
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      message: "Too many login attempts from this IP. Please try again after 15 minutes.",
+      remainingTime: "15 minutes"
+    });
   },
 });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(helmet());
-app.use(`${BASE_URL}/login`, limiter);
+app.use(`${BASE_URL}/login`, loginLimiter);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(

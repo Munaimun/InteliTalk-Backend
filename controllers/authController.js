@@ -25,7 +25,7 @@ export const signup = asyncHandler(async (req, res) => {
     validator.isEmpty(name) ||
     validator.isEmpty(email) ||
     validator.isEmpty(role) ||
-    validator.isEmpty(dept);
+    (role !== "Admin" && validator.isEmpty(dept));
 
   let passEmpty =
     validator.isEmpty(password) || validator.isEmpty(confirmPassword);
@@ -133,7 +133,7 @@ export const login = asyncHandler(async (req, res) => {
   let user = await userModel.findOne({ email });
   // check email
   if (!user) {
-    throw new NotFoundError("No user found with this email address");
+    throw new AuthenticationError("Invalid email or password");
   }
 
   // check password
@@ -195,6 +195,7 @@ export const getUserById = asyncHandler(async (req, res) => {
   }
 
   const userData = {
+    _id: user._id,
     name: user.name,
     email: user.email,
     studentId: user.studentId,
@@ -205,7 +206,7 @@ export const getUserById = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "User found",
-    userData,
+    user: userData,
   });
 });
 
@@ -218,7 +219,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   const checkField =
     validator.isEmpty(name) ||
     validator.isEmpty(email) ||
-    validator.isEmpty(dept);
+    (role !== "Admin" && validator.isEmpty(dept));
 
   if (checkField) {
     throw new ValidationError("All required fields must be filled");
@@ -237,15 +238,21 @@ export const updateUser = asyncHandler(async (req, res) => {
 
   // define user variable
   let user;
-  if (role === "Admin" || role === "Teacher") {
-    // updating admin information
+  if (role === "Admin") {
+    // updating admin information (no dept)
+    user = await userModel.findOneAndUpdate(
+      { _id: id },
+      { name: name, email: email },
+      { new: true }
+    );
+  } else if (role === "Teacher") {
+    // updating teacher information
     user = await userModel.findOneAndUpdate(
       { _id: id },
       { name: name, email: email, dept: dept },
       { new: true }
     );
-  }
-   else {
+  } else {
     // updating student information
     user = await userModel.findOneAndUpdate(
       { _id: id },

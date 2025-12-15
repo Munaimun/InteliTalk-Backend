@@ -16,7 +16,7 @@ export const getUsers = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Users fetched successfully",
-    user: users,
+    data: users,
   });
 });
 

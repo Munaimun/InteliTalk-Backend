@@ -7,18 +7,18 @@ export const mailSend = async (doc) => {
   try {
 
     let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
+      host: process.env.MAILTRAP_SMTP_HOST,
       port: 587,
       secure: false,
       auth: {
-        user: process.env.ETHEREAL_USERNAME,
-        pass: process.env.ETHEREAL_PASSWORD,
+        user: process.env.MAILTRAP_USERNAME,
+        pass: process.env.MAILTRAP_PASSWORD,
       },
     });
 
     // Send a mail
     const info = await transporter.sendMail({
-      from: "saifulcseian@gmail.com",
+      from: "<Intelitalk> hi@demomailtrap.co",
       to: doc.email,
       subject: "Registered Successfully",
       html: `<p>Now, you can login with these credientials</p><br>
