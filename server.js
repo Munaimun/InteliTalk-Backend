@@ -25,6 +25,8 @@ const PORT = process.env.PORT || 5001;
 const app = express();
 const BASE_URL = "/api/v1";
 
+app.set("trust proxy", 1);
+
 // middleware
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
