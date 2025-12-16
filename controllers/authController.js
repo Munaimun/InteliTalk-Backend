@@ -160,7 +160,7 @@ export const login = asyncHandler(async (req, res) => {
     expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none",
   };
 
   // creating cookie
