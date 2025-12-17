@@ -1,10 +1,26 @@
 import dotenv from "dotenv";
 import { Router } from "express";
+import { rateLimit } from "express-rate-limit";
 import { guest } from "../controllers/guestController.js";
 
 dotenv.config();
 
 const router = Router();
+
+// Rate limiter for guest route: 10 questions per day per IP
+const guestLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours
+  limit: 10, // 10 requests per IP per day
+  legacyHeaders: false,
+  standardHeaders: "draft-7",
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      message: "Daily question limit reached. You can ask up to 10 questions per day as a guest.",
+      remainingTime: "24 hours"
+    });
+  },
+});
 
 /**
  * @swagger
@@ -18,7 +34,7 @@ const router = Router();
  * /guest:
  *   get:
  *     summary: Guest question and answer service
- *     description: Access public Q&A functionality without authentication
+ *     description: Access public Q&A functionality without authentication (Limited to 10 questions per day per IP)
  *     tags: [Guest]
  *     parameters:
  *       - in: query
@@ -61,6 +77,22 @@ const router = Router();
  *                 message:
  *                   type: string
  *                   example: "Question parameter is required"
+ *       429:
+ *         description: Too many requests - daily limit exceeded
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Daily question limit reached. You can ask up to 10 questions per day as a guest."
+ *                 remainingTime:
+ *                   type: string
+ *                   example: "24 hours"
  *       500:
  *         description: Internal server error
  *         content:
@@ -75,6 +107,6 @@ const router = Router();
  *                   type: string
  *                   example: "Internal server error"
  */
-router.get("/", guest);
+router.get("/", guestLimiter, guest);
 
 export default router;
