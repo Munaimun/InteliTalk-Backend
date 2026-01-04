@@ -7,8 +7,8 @@
   "scripts": {
     "start": "node server.js & npm run worker",
     "dev": "nodemon ./server.js",
-    "dev:worker": "node --watch worker.js",
-    "worker": "node worker.js",
+    "dev:worker": "node --watch helpers/worker.js",
+    "worker": "node helpers/worker.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
