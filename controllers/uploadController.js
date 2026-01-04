@@ -2,7 +2,7 @@ import multer from "multer";
 import { Readable } from "stream";
 import cloudinary from "../config/cloudinary.config.js";
 import { asyncHandler } from "../middlewares/asyncHandler.js";
-import Job from "../models/job.model.js";
+import { enqueuePdfJob } from "../enqueuePdfJob.js";
 
 // --------------------
 // Multer configuration
@@ -59,17 +59,14 @@ const publicUploadController = asyncHandler(async (req, res) => {
     "public-pdfs"
   );
 
-  // ✅ MongoDB job enqueue (REPLACES queue.add)
-  await Job.create({
-    type: "pdf_process",
-    payload: {
-      fileName: req.file.originalname,
-      cloudinaryUrl: result.secure_url,
-      cloudinaryPublicId: result.public_id,
-      size: result.bytes,
-      format: result.format,
-      collectionName: "guest_collection",
-    },
+  // ✅ MongoDB job enqueue
+  await enqueuePdfJob({
+    fileName: req.file.originalname,
+    cloudinaryUrl: result.secure_url,
+    cloudinaryPublicId: result.public_id,
+    size: result.bytes,
+    format: result.format,
+    collectionName: "guest_collection",
   });
 
   res.status(200).json({
@@ -95,16 +92,13 @@ const privateUploadController = asyncHandler(async (req, res) => {
   );
 
   // ✅ MongoDB job enqueue
-  await Job.create({
-    type: "pdf_process",
-    payload: {
-      fileName: req.file.originalname,
-      cloudinaryUrl: result.secure_url,
-      cloudinaryPublicId: result.public_id,
-      size: result.bytes,
-      format: result.format,
-      collectionName: "student_collection",
-    },
+  await enqueuePdfJob({
+    fileName: req.file.originalname,
+    cloudinaryUrl: result.secure_url,
+    cloudinaryPublicId: result.public_id,
+    size: result.bytes,
+    format: result.format,
+    collectionName: "student_collection",
   });
 
   res.status(200).json({
