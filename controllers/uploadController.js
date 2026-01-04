@@ -2,7 +2,7 @@ import multer from "multer";
 import { Readable } from "stream";
 import cloudinary from "../config/cloudinary.config.js";
 import { asyncHandler } from "../middlewares/asyncHandler.js";
-import { enqueuePdfJob } from "../enqueuePdfJob.js";
+import { enqueuePdfJob } from "../helpers/enqueuePdfJob.js";
 
 // --------------------
 // Multer configuration

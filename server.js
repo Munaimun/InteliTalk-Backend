@@ -16,7 +16,7 @@ import teacherRouter from "./routes/teacher.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import guestRouter from "./routes/guest.routes.js";
 import studentRouter from "./routes/student.routes.js";
-import "./task.js";
+import "./helpers/task.js";
 
 dotenv.config();
 

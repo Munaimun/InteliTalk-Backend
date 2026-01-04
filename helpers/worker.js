@@ -4,14 +4,14 @@ import https from "https";
 import http from "http";
 import mongoose from "mongoose";
 
-import { mongoConnect } from "./config/db.js";
-import Job from "./models/job.model.js";
+import { mongoConnect } from "../config/db.js";
+import Job from "../models/job.model.js";
 
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/huggingface_transformers";
 import { Chroma } from "@langchain/community/vectorstores/chroma";
-import { ChromaClient } from "./config/chromadb.config.js";
+import { ChromaClient } from "../config/chromadb.config.js";
 
 console.log("🚀 MongoDB Worker started");
 
