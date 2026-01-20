@@ -6,6 +6,7 @@ import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
 import { mongoConnect } from "./config/db.js";
+import { preloadEmbeddings } from "./config/embeddings.config.js";
 import swaggerSpec from "./docs/swagger.js";
 import {
   errorhandler,
@@ -87,6 +88,12 @@ app.use(globalErrorHandler);
 async function startServer() {
   try {
     await mongoConnect();
+    
+    // Pre-load embeddings model at startup (non-blocking)
+    preloadEmbeddings().catch(err => {
+      console.warn("⚠️ Embeddings will load on first request:", err.message);
+    });
+    
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`API Documentation: http://localhost:${PORT}/api-docs`);

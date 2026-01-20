@@ -1,6 +1,6 @@
-import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/huggingface_transformers";
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { ChromaClient } from "../config/chromadb.config.js";
+import { getEmbeddings } from "../config/embeddings.config.js";
 import { openaiClient } from "../config/llm.config.js";
 import { systemPrompt } from "../config/rag.config.js";
 import { asyncHandler } from "../middlewares/asyncHandler.js";
@@ -17,10 +17,8 @@ export const guest = asyncHandler(async (req, res) => {
     throw new ValidationError("Question parameter is required");
   }
 
-  const embeddings = new HuggingFaceTransformersEmbeddings({
-    modelName: "sentence-transformers/all-mpnet-base-v2",
-    modelKwargs: { dtype: "float32", device: "cpu" },
-  });
+  // Use singleton embeddings instance (loaded once at startup)
+  const embeddings = await getEmbeddings();
   const vectorStore = await Chroma.fromExistingCollection(
     embeddings,
     chromaConfig
