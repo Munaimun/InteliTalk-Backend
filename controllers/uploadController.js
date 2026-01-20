@@ -9,9 +9,14 @@ import { enqueuePdfJob } from "../helpers/enqueuePdfJob.js";
 // --------------------
 const storage = multer.memoryStorage();
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
 const upload = multer({
   storage,
-  limits: { fieldSize: 10 * 1024 * 1024 },
+  limits: { 
+    fileSize: MAX_FILE_SIZE,
+    fieldSize: MAX_FILE_SIZE 
+  },
   fileFilter: (req, file, cb) => {
     if (file.mimetype === "application/pdf") cb(null, true);
     else cb(new Error("Only PDF files are allowed"));

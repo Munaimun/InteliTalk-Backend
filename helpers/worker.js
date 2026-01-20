@@ -5,11 +5,11 @@ import http from "http";
 import mongoose from "mongoose";
 
 import { mongoConnect } from "../config/db.js";
+import { getEmbeddings } from "../config/embeddings.config.js";
 import Job from "../models/job.model.js";
 
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/huggingface_transformers";
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { ChromaClient } from "../config/chromadb.config.js";
 
@@ -64,10 +64,8 @@ async function processJob(job) {
 
     const chunks = await splitter.splitDocuments(docs);
 
-    const embeddings = new HuggingFaceTransformersEmbeddings({
-      modelName: "sentence-transformers/all-mpnet-base-v2",
-      modelKwargs: { device: "cpu" },
-    });
+    // Use singleton embeddings instance (loaded once at worker startup)
+    const embeddings = await getEmbeddings();
 
     const chromaClient = new ChromaClient(data.collectionName);
 

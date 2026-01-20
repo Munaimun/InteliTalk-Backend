@@ -15,10 +15,20 @@ export const auth = asyncHandler(async (req, res, next) => {
     throw new AuthenticationError("Access token is missing");
   }
 
-  // verifying token
-  const payload = jwt.verify(token, process.env.JWT_SECRET);
-  req.user = payload;
-  next();
+  // verifying token with explicit error handling
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = payload;
+    next();
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      throw new AuthenticationError("Session expired. Please login again.");
+    }
+    if (error.name === "JsonWebTokenError") {
+      throw new AuthenticationError("Invalid token. Please login again.");
+    }
+    throw new AuthenticationError("Authentication failed");
+  }
 });
 
 export const isAdmin = (req, res, next) => {
