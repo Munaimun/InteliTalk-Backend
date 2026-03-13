@@ -51,7 +51,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000","https://iteli-talk-client.vercel.app/"],
+    origin: ["http://localhost:3000","https://iteli-talk-client.vercel.app"],
     credentials: true,
   })
 );
