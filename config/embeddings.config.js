@@ -1,5 +1,3 @@
-import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/huggingface_transformers";
-
 /**
  * Singleton pattern for HuggingFace embeddings model.
  * The model is loaded once at startup and reused across all requests
@@ -18,7 +16,7 @@ const MODEL_CONFIG = {
 /**
  * Get the singleton embeddings instance.
  * Thread-safe initialization ensures the model is only loaded once.
- * @returns {Promise<HuggingFaceTransformersEmbeddings>}
+ * @returns {Promise<object>}
  */
 export const getEmbeddings = async () => {
   // Return existing instance if available
@@ -45,13 +43,17 @@ export const getEmbeddings = async () => {
 
 /**
  * Initialize the embeddings model
- * @returns {Promise<HuggingFaceTransformersEmbeddings>}
+ * @returns {Promise<object>}
  */
 const initializeEmbeddings = async () => {
   console.log("🔄 Initializing HuggingFace embeddings model...");
   const startTime = Date.now();
 
   try {
+    const { HuggingFaceTransformersEmbeddings } = await import(
+      "@langchain/community/embeddings/huggingface_transformers"
+    );
+
     const embeddings = new HuggingFaceTransformersEmbeddings(MODEL_CONFIG);
 
     // Pre-warm the model by generating a test embedding
