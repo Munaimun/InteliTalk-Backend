@@ -18,7 +18,7 @@ export const mailSend = async (doc) => {
 
     // Send a mail
     const info = await transporter.sendMail({
-      from: "<Intelitalk> hi@demomailtrap.co",
+      from: "<Intelitalk> hello@demomailtrap.co",
       to: doc.email,
       subject: "Registered Successfully",
       html: `<p>Now, you can login with these credientials</p><br>
